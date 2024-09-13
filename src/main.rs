@@ -112,26 +112,21 @@ async fn main() -> Result<(), Box<dyn std::error::Error + 'static>> {
                     }))
                     .await
                     .unwrap();
-                
+
                 // Container Summary table
                 let mut image_summary_table = Table::new();
-                image_summary_table
-                    .add_row(row![b->"ID", b->"Size(KB)"]);
+                image_summary_table.add_row(row![b->"ID", b->"Image Tag", b->"Size(KB)"]);
 
-                for ImageSummary {
-                    id,
-                    size,
-                    ..
-                } in images.iter()
-                {
+                for ImageSummary { id, size, repo_tags, .. } in images.iter() {
                     let image_summary_row = Row::new(vec![
                         Cell::new(&id.strip_prefix("sha256:").unwrap()[..12]),
+                        Cell::new(repo_tags.iter().next().unwrap()),
                         Cell::new(&(size / (1024 as i64)).to_string()),
                     ]);
 
                     image_summary_table.add_row(image_summary_row);
                 }
-                
+
                 image_summary_table.printstd();
 
                 // for image in images {
